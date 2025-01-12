@@ -1,0 +1,153 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model approval_body {
+  approval_body_id String     @id @default(uuid())
+  institute_id     String?
+  name             String     @db.VarChar(255)
+  contact_email    String?    @db.VarChar(255)
+  contact_phone    String?    @db.VarChar(255)
+  institute        institute? @relation(fields: [institute_id], references: [institute_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model department {
+  department_id String     @id @default(uuid())
+  institute_id  String?
+  name          String     @db.VarChar(255)
+  head          String?    @db.VarChar(255)
+  institute     institute? @relation(fields: [institute_id], references: [institute_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model institute {
+  institute_id       String          @id @default(uuid())
+  institute_name     String          @db.VarChar(255)
+  about              String?
+  address            String?         @db.VarChar(255)
+  city               String?         @db.VarChar(255)
+  state              String?         @db.VarChar(255)
+  pincode            String?         @db.VarChar(20)
+  latitude           Float?
+  longitude          Float?
+  establishment_year Int?
+  institute_type     String?         @db.VarChar(255)
+  campus_size        String?         @db.VarChar(255)
+  student_intake     Int?
+  affiliation        String?         @db.VarChar(255)
+  last_updated_on    DateTime?       @db.Date
+  last_updated_from  String?         @db.VarChar(255)
+  contact_email      String?         @db.VarChar(255)
+  contact_phone      String?         @db.VarChar(255)
+  website            String?         @db.VarChar(255)
+  accreditation      String?         @db.VarChar(255)
+  institution_type   String?         @db.VarChar(255)
+  url                String?         @db.VarChar(255)
+  approval_body      approval_body[]
+  course             course[]
+  department         department[]
+  faculty            faculty[]
+  faculty_user       faculty_user[]
+  location           location[]
+  student            student[]
+  student_club       student_club[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model location {
+  location_id  String     @id @default(uuid())
+  institute_id String?
+  address      String?    @db.VarChar(255)
+  city         String?    @db.VarChar(255)
+  state        String?    @db.VarChar(255)
+  pincode      String?    @db.VarChar(20)
+  latitude     Float?
+  longitude    Float?
+  affiliation  String?    @db.VarChar(255)
+  institute    institute? @relation(fields: [institute_id], references: [institute_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model student_club {
+  club_id         String     @id @default(uuid())
+  institute_id    String?
+  name            String     @db.VarChar(255)
+  description     String?
+  faculty_advisor String?    @db.VarChar(255)
+  members_count   Int?
+  institute       institute? @relation(fields: [institute_id], references: [institute_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model user {
+  user_id      String         @id @default(uuid())
+  username     String         @db.VarChar(255)
+  password     String?        @db.VarChar(255)
+  email        String         @unique @db.VarChar(255)
+  user_type    String?        @db.VarChar(50)
+  status       String?        @db.VarChar(255)
+  faculty_user faculty_user[]
+  student      student[]
+}
+
+model course {
+  course_id      String     @id @default(uuid())
+  institute_id   String?
+  name           String     @db.VarChar(255)
+  description    String?
+  duration       String?    @db.VarChar(255)
+  level          String?    @db.VarChar(255)
+  mode           String?    @db.VarChar(255)
+  specialization String?    @db.VarChar(255)
+  eligibility    String?
+  institute      institute? @relation(fields: [institute_id], references: [institute_id], onDelete: NoAction, onUpdate: NoAction)
+  student        student[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model faculty {
+  faculty_id        String     @id @default(uuid())
+  institute_id      String?
+  name              String     @db.VarChar(255)
+  designation       String?    @db.VarChar(255)
+  subject_expertise String?    @db.VarChar(255)
+  rating            Float?
+  tenure_start      DateTime?  @db.Date
+  tenure_end        DateTime?  @db.Date
+  employment_type   String?    @db.VarChar(255)
+  institute         institute? @relation(fields: [institute_id], references: [institute_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model faculty_user {
+  faculty_id   String     @id @default(uuid())
+  user_id      String?
+  institute_id String?
+  start_year   Int?
+  end_year     Int?
+  institute    institute? @relation(fields: [institute_id], references: [institute_id], onDelete: NoAction, onUpdate: NoAction)
+  user         user?      @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model student {
+  student_id      String     @id @default(uuid())
+  user_id         String?
+  institute_id    String?
+  course_id       String?
+  enrollment_year Int?
+  graduation_year Int?
+  course          course?    @relation(fields: [course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction)
+  institute       institute? @relation(fields: [institute_id], references: [institute_id], onDelete: NoAction, onUpdate: NoAction)
+  user            user?      @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+}

@@ -18,6 +18,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       },
     });
 
+    if (!departments.length) {
+      return NextResponse.json({
+        success: false,
+        message: "Departments not found",
+      });
+    }
+
     return NextResponse.json({
       success: true,
       message: "Departments fetched successfully",

@@ -1,13 +1,12 @@
 import prisma from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET({
-  params,
-}: {
-  params: { id: string };
-}): Promise<NextResponse> {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
+  const { id } = await params;
   try {
-    const { id } = params;
     if (!id) {
       return NextResponse.json({
         success: false,
@@ -19,6 +18,14 @@ export async function GET({
         department_id: id,
       },
     });
+
+    if (!departments.length) {
+      return NextResponse.json({
+        success: false,
+        message: "Department not found",
+      });
+    }
+
     return NextResponse.json({
       success: true,
       message: "Departments fetched successfully",

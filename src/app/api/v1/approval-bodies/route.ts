@@ -21,6 +21,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         },
     });
 
+    if (!approvalBodies.length) {
+        return NextResponse.json({
+            success: false,
+            message: "Approval bodies not found",
+        });
+    }
+
     return NextResponse.json({
         success: true,
         message: "Approval bodies fetched successfully",

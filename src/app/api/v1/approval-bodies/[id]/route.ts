@@ -1,13 +1,15 @@
 import prisma from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET({
+export async function GET(
+  req: NextRequest,
+  {
   params,
 }: {
   params: { id: string };
 }): Promise<NextResponse> {
   try {
-    const { id } = params;
+    const { id } = await params;
     if (!id) {
       return NextResponse.json(
         {
@@ -23,6 +25,14 @@ export async function GET({
         approval_body_id: id,
       },
     });
+
+    if (!approvalBody) {
+      return NextResponse.json({
+          success: false,
+          message: "Approval bodies not found",
+      });
+  }
+
     return NextResponse.json({
       success: true,
       message: "Approval body fetched successfully",

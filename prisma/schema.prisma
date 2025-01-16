@@ -30,6 +30,9 @@ model department {
   name          String     @db.VarChar(255)
   head          String?    @db.VarChar(255)
   institute     institute? @relation(fields: [institute_id], references: [institute_id], onDelete: NoAction, onUpdate: NoAction)
+
+  faculty faculty[]
+  course  course[]
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -105,6 +108,7 @@ model user {
 model course {
   course_id      String     @id @default(uuid())
   institute_id   String?
+  department_id  String?
   name           String     @db.VarChar(255)
   description    String?
   duration       String?    @db.VarChar(255)
@@ -113,12 +117,14 @@ model course {
   specialization String?    @db.VarChar(255)
   eligibility    String?
   institute      institute? @relation(fields: [institute_id], references: [institute_id], onDelete: NoAction, onUpdate: NoAction)
+  department     department? @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction)
   student        student[]
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model faculty {
   faculty_id        String     @id @default(uuid())
+  department_id     String?
   institute_id      String?
   name              String     @db.VarChar(255)
   designation       String?    @db.VarChar(255)
@@ -128,6 +134,7 @@ model faculty {
   tenure_end        DateTime?  @db.Date
   employment_type   String?    @db.VarChar(255)
   institute         institute? @relation(fields: [institute_id], references: [institute_id], onDelete: NoAction, onUpdate: NoAction)
+  department       department? @relation(fields: [department_id], references: [department_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model faculty_user {

@@ -34,10 +34,10 @@ DATABASE_URL=postgresql://user:password@localhost:5432/mydatabase
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 
-- Make sure to implement caching
+<!-- - Make sure to implement caching
 - Implement Zod for input validation
 - Rate limiting
-- Ensure request is secure and using HTTPS protocol
+- Ensure request is secure and using HTTPS protocol -->
 
 
 

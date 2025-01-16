@@ -1,23 +1,24 @@
 import prisma from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(req: NextRequest): Promise<NextResponse> {
+export async function GET({
+  params,
+}: {
+  params: { id: string };
+}): Promise<NextResponse> {
   try {
-    const searchParams = req.nextUrl.searchParams;
-    const instituteId = searchParams.get("instituteId");
-
-    if (!instituteId) {
+    const { id } = params;
+    if (!id) {
       return NextResponse.json({
         success: false,
-        message: "Institute id is required",
+        message: "Department id is required",
       });
     }
     const departments = await prisma.department.findMany({
       where: {
-        institute_id: instituteId,
+        department_id: id,
       },
     });
-
     return NextResponse.json({
       success: true,
       message: "Departments fetched successfully",
@@ -26,7 +27,10 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { message: "Internal server error", success: false },
+      {
+        message: "Internal server error",
+        success: false,
+      },
       { status: 500 }
     );
   }

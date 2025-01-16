@@ -1,1 +1,0 @@
-//we'll be using query params 
